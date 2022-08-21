@@ -44,5 +44,5 @@ func (s *InnerServer) MessageHandler(packet *network.SessionPacket) {
 }
 
 func (s *InnerServer) Router(interface{}) {
-
+	//todo 发送给对应的服务器处理
 }

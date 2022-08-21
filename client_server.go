@@ -45,5 +45,5 @@ func (s *ClientServer) MessageHandler(packet *network.SessionPacket) {
 }
 
 func (s *ClientServer) Router(interface{}) {
-
+	//todo  发送给对应客户端
 }
