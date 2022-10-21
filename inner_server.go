@@ -6,8 +6,8 @@ import (
 )
 
 type InnerServer struct {
-	real     *network.Server
-	sessions sync.Map //*network.Session
+	real        *network.Server
+	serversInfo sync.Map //*network.Session
 	//哪些消息交给这个服处理（messageId 范围控制）
 	FromClientCh chan interface{}
 	ToClientCh   chan interface{}
@@ -15,12 +15,12 @@ type InnerServer struct {
 
 func NewInnerServer() *InnerServer {
 	return &InnerServer{
-		real: network.NewServer(""),
+		//real: network.NewServer("127.0.0.1:3456"),
 	}
 }
 
 func (s *InnerServer) loop() {
-	s.real.OnSessionPacket = s.MessageHandler
+	s.real.MessageHandler = s.MessageHandler
 	s.real.Run()
 	for {
 		select {
@@ -30,19 +30,11 @@ func (s *InnerServer) loop() {
 	}
 }
 
-func (s *InnerServer) AddSession(session *network.Session) {
-	s.sessions.Store(session, struct{}{})
-}
-
-func (s *InnerServer) DeleteSession(session *network.Session) {
-	s.sessions.Delete(session)
-
-}
-
-func (s *InnerServer) MessageHandler(packet *network.SessionPacket) {
+func (s *InnerServer) MessageHandler(packet *network.Packet) {
 
 }
 
 func (s *InnerServer) Router(interface{}) {
+
 	//todo 发送给对应的服务器处理
 }

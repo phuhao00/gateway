@@ -2,12 +2,10 @@ package main
 
 import (
 	"github.com/phuhao00/network"
-	"sync"
 )
 
 type ClientServer struct {
-	real     *network.Server
-	sessions sync.Map //*network.Session
+	real *network.Server
 	//与其他服绑定信息
 	FromInnerCh chan interface{}
 	ToInnerCh   chan interface{}
@@ -15,13 +13,12 @@ type ClientServer struct {
 
 func NewClientServer() *ClientServer {
 	return &ClientServer{
-		real:     network.NewServer(""),
-		sessions: sync.Map{},
+		//real:     network.NewServer(""),
 	}
 }
 
 func (s *ClientServer) loop() {
-	s.real.OnSessionPacket = s.MessageHandler
+	s.real.MessageHandler = s.MessageHandler
 	for {
 		select {
 		case data := <-s.FromInnerCh:
@@ -31,16 +28,7 @@ func (s *ClientServer) loop() {
 
 }
 
-func (s *ClientServer) AddSession(session *network.Session) {
-	s.sessions.Store(session, struct{}{})
-}
-
-func (s *ClientServer) DeleteSession(session *network.Session) {
-	s.sessions.Delete(session)
-
-}
-
-func (s *ClientServer) MessageHandler(packet *network.SessionPacket) {
+func (s *ClientServer) MessageHandler(packet *network.Packet) {
 
 }
 
