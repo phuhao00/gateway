@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/phuhao00/fuse"
 	"github.com/phuhao00/network"
 )
 
@@ -9,6 +10,7 @@ type ClientServer struct {
 	//与其他服绑定信息
 	FromInnerCh chan interface{}
 	ToInnerCh   chan interface{}
+	router      *fuse.Router
 }
 
 func NewClientServer() *ClientServer {
@@ -29,9 +31,19 @@ func (s *ClientServer) loop() {
 }
 
 func (s *ClientServer) MessageHandler(packet *network.Packet) {
-
+	//todo check
+	s.ToInnerCh <- packet
 }
 
-func (s *ClientServer) Router(interface{}) {
-	//todo  发送给对应客户端
+func (s *ClientServer) Router(data interface{}) {
+	handler := s.router.GetHandler(data.(*network.Packet))
+	if handler != nil {
+		val := data.(*network.Packet)
+		handler(val, nil) //todo
+	}
+}
+
+func (s *ClientServer) Register() {
+	s.router.AddRoute(333, s.RegisterLoginInfo)
+	s.router.AddRoute(444, s.ForwardServerPacket)
 }
