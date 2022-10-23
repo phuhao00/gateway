@@ -14,9 +14,12 @@ type ClientServer struct {
 }
 
 func NewClientServer() *ClientServer {
-	return &ClientServer{
+	c := &ClientServer{
 		//real:     network.NewServer(""),
 	}
+	c.router = fuse.NewRouter()
+	c.router.Use(CheckPacketSecurity) //中间件
+	return c
 }
 
 func (s *ClientServer) loop() {
